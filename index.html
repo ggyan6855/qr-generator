@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator & Customizer</title>
+  <meta name="description" content="Generate and customize QR codes instantly with live preview.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.8);
+      color: #333;
+    }
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+    .button-group button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+      background: #ff7eb3;
+      color: #fff;
+      font-size: 16px;
+    }
+    .button-group button:hover {
+      background: #ff5c8a;
+    }
+    #qrcode {
+      display: flex;
+      justify-content: center;
+      margin: 20px auto;
+      background: #fff;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .share-buttons {
+      margin-top: 10px;
+    }
+    .share-buttons a {
+      margin: 5px;
+      display: inline-block;
+      padding: 10px 15px;
+      border-radius: 5px;
+      color: white;
+      text-decoration: none;
+    }
+    .facebook { background: #3b5998; }
+    .twitter { background: #1da1f2; }
+    .linkedin { background: #0077b5; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>QR Code Generator</h1>
+    <form id="qrForm">
+      <div class="form-group">
+        <label for="qrText">Enter text or URL:</label>
+        <input type="text" id="qrText" placeholder="Enter text or URL" required>
+      </div>
+      <div class="form-group">
+        <label for="qrSize">Size (px):</label>
+        <input type="number" id="qrSize" value="200" min="100" max="1000">
+      </div>
+      <div class="form-group">
+        <label for="qrForeground">Foreground Color:</label>
+        <input type="color" id="qrForeground" value="#000000">
+      </div>
+      <div class="form-group">
+        <label for="qrBackground">Background Color:</label>
+        <input type="color" id="qrBackground" value="#ffffff">
+      </div>
+      <div class="form-group">
+        <label for="qrErrorCorrection">Error Correction:</label>
+        <select id="qrErrorCorrection">
+          <option value="L">L (Low)</option>
+          <option value="M" selected>M (Medium)</option>
+          <option value="Q">Q (Quartile)</option>
+          <option value="H">H (High)</option>
+        </select>
+      </div>
+      <div class="button-group">
+        <button type="button" id="generateBtn">Generate</button>
+        <button type="button" id="downloadBtn">Download</button>
+        <button type="button" id="shareBtn">Share</button>
+      </div>
+    </form>
+    <div id="qrcode"></div>
+    <div class="share-buttons" id="shareButtons" style="display: none;">
+      <a href="#" id="fbShare" class="facebook">Facebook</a>
+      <a href="#" id="twitterShare" class="twitter">Twitter</a>
+      <a href="#" id="linkedinShare" class="linkedin">LinkedIn</a>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    function generateQRCode() {
+      const qrText = document.getElementById('qrText').value.trim();
+      const qrSize = parseInt(document.getElementById('qrSize').value) || 200;
+      const qrForeground = document.getElementById('qrForeground').value;
+      const qrBackground = document.getElementById('qrBackground').value;
+      const errorCorrection = document.getElementById('qrErrorCorrection').value;
+      if (qrText === '') return;
+      document.getElementById('qrcode').innerHTML = '';
+      new QRCode(document.getElementById('qrcode'), {
+        text: qrText,
+        width: qrSize,
+        height: qrSize,
+        colorDark: qrForeground,
+        colorLight: qrBackground,
+        correctLevel: QRCode.CorrectLevel[errorCorrection]
+      });
+    }
+    function generateShareableLink() {
+      document.getElementById('shareButtons').style.display = 'block';
+      const url = encodeURIComponent(window.location.href);
+      document.getElementById('fbShare').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      document.getElementById('twitterShare').href = `https://twitter.com/intent/tweet?url=${url}`;
+      document.getElementById('linkedinShare').href = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+    }
+    document.getElementById('generateBtn').addEventListener('click', generateQRCode);
+    document.getElementById('shareBtn').addEventListener('click', generateShareableLink);
+  </script>
+</body>
+</html>
